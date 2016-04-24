@@ -1,0 +1,196 @@
+import java.sql.*;
+import java.util.*;
+class Regression
+{
+    public static void main(String args[]) throws Exception
+    {
+        Database db=new Database("F:/BlackMeow/database");
+        double[][] rhs=new double[3][1];
+        String s="select max(day) as max_days from veggies";
+        ResultSet rs=db.getData(s);
+        double abc=0.0;
+        while(rs.next())
+        {
+            abc=Double.parseDouble(rs.getString("max_days"));
+        }
+        s="select day, price from veggies";
+        rs=db.getData(s);
+        double x1=0.0;
+        double x2=0.0;
+        double x3=0.0;
+        double x4=0.0;
+        double y1=0.0;
+        double x1y1=0.0;
+        double x2y1=0.0;
+        //double stat[][]=new double[][]{{1.0,1.0},{2.0,4.0},{3.0,9.0},{4.0,16.0},{5.0,25.0}};
+        /*for(int i=0;i<5;i++)
+        {
+        for(int j=0;j<2;j++)
+        {
+        System.out.println("stat    : "+stat[i][j]);
+        }
+        }*/
+        while(rs.next())
+        {
+            double x=Double.parseDouble(rs.getString("day"));
+            double y=Double.parseDouble(rs.getString("price"));
+            x1=x1+x;
+            x2=x2+(x*x);
+            x3=x3+(x*x*x);
+            x4=x4+(x*x*x*x);
+            x1y1=x1y1+(x*y);
+            x2y1=x2y1+(x*x*y);
+        }    /*    
+        for(int i=0;i<5;i++)
+        {
+        double val=stat[i][0];
+        x1=x1+val;
+        x2=x2+(val*val);
+        x3=x3+(val*val*val);
+        x4=x4+(val*val*val*val);
+        y1=y1+(stat[i][1]);
+        x1y1=x1y1+(val*stat[i][1]);
+        x2y1=x2y1+(val*val*stat[i][1]);
+        }*/
+        double[][] arr= new double [][]{{abc, x1, x2},{x1, x2, x3},{x2, x3, x4}};
+        System.out.println("ARRAY");
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<3;j++)
+            {
+                System.out.print(arr[i][j]+"  ");
+            }
+            System.out.println();
+        }
+        rhs[0][0]=y1;
+        rhs[1][0]=x1y1;
+        rhs[2][0]=x2y1;
+        double inv[][]=invert(arr);
+        double ans[][]=new double[3][1];
+        double sum=0.0;
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<1;j++)
+            {
+                for(int k=0;k<3;k++)
+                {
+                    sum=sum+inv[i][k]*rhs[k][j];
+                }
+                ans[i][j]=sum;
+                sum=0;
+            }
+        }
+
+        System.out.println("INVERSE");
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<3;j++)
+            {
+                System.out.print(inv[i][j]+"  ");
+            }
+            System.out.println();
+        }
+        System.out.println("RHS");
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<1;j++)
+            {
+                System.out.print(rhs[i][j]+"  ");
+            }
+            System.out.println();
+        }
+        System.out.println("ANSWER");
+        for(int i=0;i<3;i++)
+        {
+            for(int j=0;j<1;j++)
+            {
+                System.out.print(ans[i][j]+"  ");
+            }
+            System.out.println();
+        }
+        Scanner sc=new Scanner(System.in);
+        String ip=sc.nextLine();
+        int dayval=Integer.parseInt(ip);
+        double b0=ans[0][0];
+        double b1=ans[1][0];
+        double b2=ans[2][0];
+        double finalprice=b0+(b1*dayval)+(b2*dayval*dayval);
+        System.out.println("\nPredicted Price on Day "+dayval+" is : "+finalprice);
+
+    }
+
+    public static double[][] invert(double a[][]) 
+    {
+        int n = a.length;
+        double x[][] = new double[n][n];
+        double b[][] = new double[n][n];
+        int index[] = new int[n];
+        for (int i=0; i<n; ++i) 
+            b[i][i] = 1;
+        gaussian(a, index);
+        for (int i=0; i<n-1; ++i)
+            for (int j=i+1; j<n; ++j)
+                for (int k=0; k<n; ++k)
+                    b[index[j]][k]
+                    -= a[index[j]][i]*b[index[i]][k];
+        for (int i=0; i<n; ++i) 
+        {
+            x[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
+            for (int j=n-2; j>=0; --j) 
+            {
+                x[j][i] = b[index[j]][i];
+                for (int k=j+1; k<n; ++k) 
+                {
+                    x[j][i] -= a[index[j]][k]*x[k][i];
+                }
+                x[j][i] /= a[index[j]][j];
+            }
+        }
+        return x;
+    }
+
+    public static void gaussian(double a[][], int index[]) 
+    {
+        int n = index.length;
+        double c[] = new double[n];
+        for (int i=0; i<n; ++i) 
+            index[i] = i;
+        for (int i=0; i<n; ++i) 
+        {
+            double c1 = 0;
+            for (int j=0; j<n; ++j) 
+            {
+                double c0 = Math.abs(a[i][j]);
+                if (c0 > c1) c1 = c0;
+            }
+            c[i] = c1;
+        }
+
+        // Search the pivoting element from each column
+        int k = 0;
+        for (int j=0; j<n-1; ++j) 
+        {
+            double pi1 = 0;
+            for (int i=j; i<n; ++i) 
+            {
+                double pi0 = Math.abs(a[index[i]][j]);
+                pi0 /= c[index[i]];
+                if (pi0 > pi1) 
+                {
+                    pi1 = pi0;
+                    k = i;
+                }
+            }
+            int itmp = index[j];
+            index[j] = index[k];
+            index[k] = itmp;
+            for (int i=j+1; i<n; ++i) 	
+            {
+                double pj = a[index[i]][j]/a[index[j]][j];
+                a[index[i]][j] = pj;
+                for (int l=j+1; l<n; ++l)
+                    a[index[i]][l] -= pj*a[index[j]][l];
+            }
+        }
+    }
+}

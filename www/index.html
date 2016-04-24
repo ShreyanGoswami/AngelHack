@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>SabziWalaCode</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/mystylesheet.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.jpg">
+
+  <!-- Header
+  ------------------------------------------------------>
+  
+  
+</head>
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<ul>
+	<li><a href="index.html">SabziWalaCode</a></li>
+	<li><a href="method.html">Method</a></li>
+	<li><a href="aboutus.html">About Us</a></li>
+</ul>
+  
+   <div id="chartContainer" style="float: right; height: 300px; width: 58%; margin-top: 10%; margin-right: 5%;"></div>	
+    <div class="row">
+	
+      <div class="one-third column" style="margin-top: 10%; padding-right: 0px; margin-left: 5%;">
+			<form>
+				<div class="row">
+					<div class="six columns">
+						<label for="itemInput">Item Name</label>
+						<input class="u-full-width" type="text" placeholder="Apples">
+					
+						<label for="itemType">Item Type</label>
+						<select class="u-full-width" id="exampleRecipientInput">
+							<option value="Option 1">Fruits</option>
+							<option value="Option 2">Vegetables</option>
+						</select>
+					
+						<label for="date">Date</label>
+						<input class="u-full-width" type="date" name="bday">
+					</div>
+				</div>
+				<br>
+				<button class="button-primary" type="button" value="Submit" onclick="loadGraph()">Submit</button>
+			</form>			
+			
+			<script type="text/javascript">
+				function loadGraph() 
+				{   
+					var chart = new CanvasJS.Chart("chartContainer",
+						{
+							zoomEnabled: true,
+							title:{text: "Stress Test: 10 Data Points"},
+							animationEnabled: true,
+							animationDuration: 4000,
+							interactivityEnabled: true,
+							theme: "theme4",
+							axisX:{labelAngle: 30},
+							axisY :{includeZero:false},
+							data: data  // random generator below
+						}
+					);
+					chart.render();
+				}
+  
+				var limit = 10;    //increase number of dataPoints by increasing this
+				var y = 0;
+				
+				var data = []; var dataSeries = { type: "line" };
+				var dataPoints = [];
+				for (var i = 0; i < limit; i += 1) {
+					y += (Math.random() * 10 - 5);
+					dataPoints.push({
+						x: i - limit / 2,
+						y: y                
+					});
+				}
+				
+				dataSeries.dataPoints = dataPoints;
+				data.push(dataSeries);               
+  
+  </script>
+  <script type="text/javascript" src="canvasjs.min.js"></script>
+			</div>
+			
+    </div>
+  
+  
+  
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+
+
+</html>

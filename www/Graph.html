@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>  
+  <script type="text/javascript">
+  function graph() {    
+   
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      zoomEnabled: true,
+      title:{
+        text: "Stress Test: 10 Data Points" 
+      },
+		
+		animationEnabled: true,
+		animationDuration: 2000,
+		interactivityEnabled: true,
+		theme: "theme4",
+      
+	  axisX:{
+        labelAngle: 30
+      },
+      
+      axisY :{
+        includeZero:false
+      },
+      
+      data: data  // random generator below
+      
+    });
+
+    chart.render();
+  }
+  
+   var limit = 10;    //increase number of dataPoints by increasing this
+   
+   var y = 0;
+   var data = []; var dataSeries = { type: "line" };
+   var dataPoints = [];
+   for (var i = 0; i < limit; i += 1) {
+    y += (Math.random() * 10 - 5);
+    dataPoints.push({
+      x: i - limit / 2,
+      y: y                
+    });
+  }
+  dataSeries.dataPoints = dataPoints;
+  data.push(dataSeries);               
+  
+  </script>
+  <script type="text/javascript" src="canvasjs.min.js"></script></head>
+  <body>
+    <div id="chartContainer" style="height: 300px; width: 100%;">
+		<button type="button" onclick="graph()">graph</button>
+		
+    </div>
+  </body>
+</html>
