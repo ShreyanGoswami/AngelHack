@@ -13,6 +13,6 @@ for i in range(0,len(L)-1):
 	if L[i+1]-L[i]>max:
 		max=L[i+1]-L[i]
 		index=i+2
-		
-print (max)
-print (index)
+close(file)
+file=open("power.txt","w")
+file.write(index)
